@@ -21,7 +21,7 @@ class Identifier:
 
         img_thresh_blur = cv2.GaussianBlur(img_thresh, (5, 5), 0)
         img_masked = cv2.bitwise_and(img_thresh_blur, img_gray)
-        # cv2.imshow(self.label, img_thresh_blur)
+        cv2.imshow(self.label, img_thresh_blur)
         return img_masked
 
     def find(self, img_masked):
@@ -45,7 +45,7 @@ class Identifier:
                 if (len(contours) > 20):
                     break
 
-            if (area > self.area + 300):
+            if (area > self.area + 20):
 
                 # print(area)
                 rectangles.append(rect)

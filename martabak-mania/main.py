@@ -8,7 +8,8 @@ from control import Control
 
 # Ayo Gabung Kompetisi
 # Martabak Mania
-wincap = WinCap('Ayo Gabung Kompetisi - Google Chrome')
+# Platformnya Game Nasional
+wincap = WinCap('Platformnya Game Nasional - Google Chrome')
 control = Control()
 
 
@@ -26,11 +27,11 @@ topping_list = [
 ]
 
 control.start()
-limit = 5000
+limit = 9999999
 
 while (limit > 0):
     cap = wincap.get_screenshot()
-    crop = cap[280:420, 40:210]
+    crop = cap[305:440, 43:200]
 
     crop_hsv = cv2.cvtColor(crop, cv2.COLOR_RGB2HSV)
     crop_gray = cv2.cvtColor(crop, cv2.COLOR_RGB2GRAY)
@@ -46,7 +47,7 @@ while (limit > 0):
     topping_position = [
         [(rw + 2, rw + 2 + cs), (7, 7 + cs)],
         [(rw + 31, rw + 31+cs), (34, 34 + cs)],
-        [(rw + 34, rw + 34 + cs), (70, 70 + cs)],
+        [(rw + 34, rw + 34 + cs), (rh, rh + cs)],
         [(rw + 2, rw + 2 + cs), (h-3 - cs, h-3)],
         [(rw - 2 - cs, rw - 2), (h-3 - cs, h-3)],
         [(14, 14 + cs), (68, 68 + cs)],
@@ -80,10 +81,16 @@ while (limit > 0):
                 # print(len(top_rects), end=" ")
                 # top_loc.append(index)
                 toppings[index] = top.label
+            else:
+                if (top.label == 'kacang'):
+                    cv2.rectangle(crop, (x1, y1), (x2, y2),
+                                  thickness=2, color=(0, 0, 0))
             index += 1
         # if (len(top_loc) > 0):
         #     print(top.label, top_loc)
     # print(toppings)
+
+    print(toppings)
 
     if (toppings.count(None) == 0):
         print(toppings)

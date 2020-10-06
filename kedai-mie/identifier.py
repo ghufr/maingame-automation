@@ -40,9 +40,9 @@ class Identifier:
             area = rw * rh
             aspect_ratio = rw / rh
             # print(rw, rh, area)
-            diff = abs(self.aspect_ratio - aspect_ratio)
+            # diff = abs(self.aspect_ratio - aspect_ratio)
             # print(self.label, diff)
-            if (area > self.area - 50):
+            if (area > self.area - 20):
                 # print(area)
                 rectangles.append(rect)
                 sizes.append(area)

@@ -2,20 +2,20 @@ import pyautogui
 
 
 positions = {
-    'Bakso': (120, 692),
-    'Sawi': (209, 692),
-    'Telur': (296, 692),
-    'Udang': (120, 621),
-    'Kornet': (209, 621),
-    'Sosis': (296, 621)
+    'Bakso': (120, 706),
+    'Sawi': (209, 706),
+    'Telur': (296, 706),
+    'Udang': (120, 636),
+    'Kornet': (209, 636),
+    'Sosis': (296, 636)
 }
 
 positions_addon = {
-    'Esteh': (46, 622),
-    'Esjeruk': (46, 689),
-    'Bakwan': (405, 534),
-    'Tempe': (459, 534),
-    'Tahu': (338, 534)
+    'Esteh': (51, 634),
+    'Esjeruk': (51, 699),
+    'Bakwan': (390, 554),
+    'Tempe': (451, 554),
+    'Tahu': (335, 554)
 }
 
 
@@ -27,7 +27,7 @@ class Control:
 
     def serve(self):
         if not self.debug:
-            pyautogui.click(240, 811, duration=0.01)
+            pyautogui.click(240, 811, duration=0.08)
 
     def pick_plate(self, plate):
         if not self.debug:
@@ -40,18 +40,18 @@ class Control:
 
     def pick_noodle(self):
         if not self.debug:
-            pyautogui.click(419, 631, duration=0.101)
+            pyautogui.click(419, 631, duration=0.105)
 
     def pick_toppings(self, toppings):
         if not self.debug:
             for top in toppings:
-                pyautogui.click(positions[top], duration=0.06)
+                pyautogui.click(positions[top], duration=0.08)
 
     def pick_addons(self, additionals):
         if not self.debug:
             for add in additionals:
-                pyautogui.click(positions_addon[add], duration=0.01)
+                pyautogui.click(positions_addon[add], duration=0.08)
 
     def trash(self):
         if not self.debug:
-            pyautogui.click(86, 954, duration=0.1)
+            pyautogui.click(86, 954, duration=0.08)

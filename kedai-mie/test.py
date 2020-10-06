@@ -9,27 +9,28 @@ from control import Control
 
 # Kedai Mie Indonesia
 # Platformnya Game Nasional
-wincap = WinCap('Platformnya Game Nasional - Google Chrome')
+# Ayo Gabung Kompetisi
+wincap = WinCap('Ayo Gabung Kompetisi - Google Chrome')
 control = Control()
 
 topping_list = [
     Identifier('Sawi', [(48, 36, 0), (72, 255, 255)], 42, 24),
     Identifier('Telur', [(14, 191, 0), (21, 255, 226)], 22, 22),
-    Identifier('Bakso', [(0, 0, 121), (17, 72, 226)], 32, 32),
+    Identifier('Bakso', [(0, 0, 121), (17, 72, 226)], 24, 24),
     Identifier('Sosis', [(4, 56, 146), (9, 255, 249)], 40, 20),
     Identifier('Kornet', [(8, 57, 0), (14, 202, 255)], 21, 28),
     Identifier('Udang', [(14, 24, 231), (19, 180, 255)], 32, 32),
 ]
 
 drink_list = [
-    Identifier('Esteh', [(8, 52, 161), (13, 255, 243)], 43, 59),
-    Identifier('Esjeruk', [(15, 169, 0), (23, 255, 255)], 23, 39)
+    Identifier('Esteh', [(8, 52, 161), (13, 255, 243)], 23, 39),
+    Identifier('Esjeruk', [(15, 169, 0), (23, 255, 255)], 20, 30)
 ]
 
 snack_list = [
-    Identifier('Tahu', [(15, 99, 115), (26, 193, 225)], 32, 36),
-    Identifier('Tempe', [(20, 90, 136), (41, 184, 250)], 32, 36),
-    Identifier('Bakwan', [(6, 111, 0), (25, 196, 223)], 32, 36),
+    Identifier('Tahu', [(15, 99, 115), (26, 193, 225)], 30, 34),
+    Identifier('Tempe', [(20, 90, 136), (41, 184, 250)], 30, 34),
+    Identifier('Bakwan', [(6, 111, 0), (25, 196, 223)], 30, 34),
 ]
 
 stove_status = Identifier(
@@ -60,12 +61,12 @@ def find_addons(img, items):
 
 while (True):
     cap = wincap.get_screenshot()
-    cap_crop = cap[240:380, 30:235]
+    cap_crop = cap[285:385, 45:230]
     cap_crop_stove = cap[580:640, 360:420]
     cap_crop_top = cap_crop[0:38, 50:140]
     cap_crop_left = cap_crop[0:60, 0:60]
     cap_crop_right = cap_crop[0:80, 150:200]
-    cap_crop_center = cap_crop[34:110, 40: 160]
+    cap_crop_center = cap_crop[10:85, 30: 146]
 
     cap_crop_hsv = cv2.cvtColor(cap_crop, cv2.COLOR_RGB2HSV)
     cap_crop_gray = cv2.cvtColor(cap_crop, cv2.COLOR_RGB2GRAY)
@@ -84,10 +85,11 @@ while (True):
     bthresh_blur = cv2.GaussianBlur(bthresh, (7, 7), 0)
     canny = cv2.Canny(bthresh_blur, 100, 300, apertureSize=3)
     circles = cv2.HoughCircles(bthresh_blur, cv2.HOUGH_GRADIENT, 1,
-                               bthresh_blur.shape[0]/64, param1=100, param2=24, minRadius=45, maxRadius=70)
+                               bthresh_blur.shape[0]/64, param1=100, param2=24, minRadius=55, maxRadius=80)
 
     # 0 = Mangkok
     # 1 = Bungkus
+    # print(circles)
     if circles is not None:
         plate = 0
     else:
@@ -102,11 +104,11 @@ while (True):
         if (top.label == 'Sosis'):
             top_masked = top_masked[0:35, 35:80]
         if (top.label == 'Telur'):
-            top_masked = top_masked[10:60, 40:80]
+            top_masked = top_masked[20:55, 40:75]
+            cv2.imshow('T', top_masked)
 
         if (top.label == 'Bakso'):
-            top_masked = top_masked[20:100, 80: 120]
-            # cv2.imshow('T', top_masked)
+            top_masked = top_masked[0:70, 70: 100]
         top_rects, _ = top.find(top_masked)
         if (len(top_rects) > 0):
             toppings.append(top.label)
@@ -134,13 +136,14 @@ while (True):
         if (len(stove_rect) > 0):
             control.pick_plate(plate)
             control.pick_noodle()
-            time.sleep(0.03)
+            time.sleep(0.05)
             control.pick_toppings(toppings)
             control.serve()
             control.trash()
 
     if not is_served:
         control.pick_noodle()
+
         # Check drinks
         drink = find_addons(cap_crop_right, drink_list)
         # Check snack
@@ -150,14 +153,17 @@ while (True):
             additionals.extend(drink)
 
         if (len(snack) > 0):
-            additionals.extend(snack)
+            additionals.extend(["Tahu", "Tempe", "Bakwan"])
 
         control.pick_addons(additionals)
+        time.sleep(0.3)
 
     print(is_served, plate, toppings, additionals)
 
-    # cv2.imshow('Cap', cap_crop)
-    # cv2.imshow('Canny', canny)
+    cv2.imshow('Cap Crop', cap_crop)
+    # cv2.imshow('Cap Crop Stove', cap_crop_stove)
+    # cv2.imshow('Canny', circles)
+
     # cv2.imwrite('test.png', cap_crop)
 
     # time.sleep(0.2)
