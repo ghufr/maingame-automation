@@ -9,6 +9,8 @@ class WinCap:
     cropped_y = 0
     offset_x = 0
     offset_y = 0
+    h = 0
+    w = 0
     window_rect = None
 
     def __init__(self, window_name):
@@ -18,8 +20,8 @@ class WinCap:
         self.w = window_rect[2] - window_rect[0]
         self.h = window_rect[3] - window_rect[1]
 
-        offset_top = 60
-        offset_x = 40
+        offset_top = 120
+        offset_x = 10
 
         self.h = self.h - offset_top
         self.w = self.w - (offset_x * 2)

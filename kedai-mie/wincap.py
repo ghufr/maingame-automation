@@ -18,7 +18,7 @@ class WinCap:
         self.w = window_rect[2] - window_rect[0]
         self.h = window_rect[3] - window_rect[1]
 
-        offset_top = 80
+        offset_top = 76
         offset_x = 40
 
         self.h = self.h - offset_top

@@ -18,10 +18,9 @@ class WinCap:
         self.w = window_rect[2] - window_rect[0]
         self.h = window_rect[3] - window_rect[1]
 
-        offset_top = 60
-        offset_x = 40
+        offset_top = 118
+        offset_x = 20
 
-        self.h = self.h - offset_top
         self.w = self.w - (offset_x * 2)
 
         self.cropped_x = offset_x

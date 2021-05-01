@@ -55,3 +55,15 @@ class Control:
     def trash(self):
         if not self.debug:
             pyautogui.click(86, 954, duration=0.08)
+
+    def play_again(self):
+        if not self.debug:
+            pyautogui.click(243, 611)
+
+    def play(self):
+        if not self.debug:
+            pyautogui.click(335, 996)
+
+    def start(self):
+        if not self.debug:
+            pyautogui.click(248, 807)

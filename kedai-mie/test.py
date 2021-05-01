@@ -10,7 +10,7 @@ from control import Control
 # Kedai Mie Indonesia
 # Platformnya Game Nasional
 # Ayo Gabung Kompetisi
-wincap = WinCap('Ayo Gabung Kompetisi - Google Chrome')
+wincap = WinCap('Platformnya Game Nasional - Google Chrome')
 control = Control()
 
 topping_list = [
@@ -59,10 +59,11 @@ def find_addons(img, items):
     return result
 
 
+tick = 0
 while (True):
     cap = wincap.get_screenshot()
     cap_crop = cap[285:385, 45:230]
-    cap_crop_stove = cap[580:640, 360:420]
+    cap_crop_stove = cap[590:680, 365:410]
     cap_crop_top = cap_crop[0:38, 50:140]
     cap_crop_left = cap_crop[0:60, 0:60]
     cap_crop_right = cap_crop[0:80, 150:200]
@@ -85,7 +86,7 @@ while (True):
     bthresh_blur = cv2.GaussianBlur(bthresh, (7, 7), 0)
     canny = cv2.Canny(bthresh_blur, 100, 300, apertureSize=3)
     circles = cv2.HoughCircles(bthresh_blur, cv2.HOUGH_GRADIENT, 1,
-                               bthresh_blur.shape[0]/64, param1=100, param2=24, minRadius=55, maxRadius=80)
+                               bthresh_blur.shape[0]/64, param1=100, param2=24, minRadius=54, maxRadius=82)
 
     # 0 = Mangkok
     # 1 = Bungkus
@@ -140,6 +141,7 @@ while (True):
             control.pick_toppings(toppings)
             control.serve()
             control.trash()
+            tick = 0
 
     if not is_served:
         control.pick_noodle()
@@ -158,7 +160,8 @@ while (True):
         control.pick_addons(additionals)
         time.sleep(0.3)
 
-    print(is_served, plate, toppings, additionals)
+    print(is_served, plate, toppings, additionals, tick)
+    tick += 1
 
     cv2.imshow('Cap Crop', cap_crop)
     # cv2.imshow('Cap Crop Stove', cap_crop_stove)
@@ -168,6 +171,11 @@ while (True):
 
     # time.sleep(0.2)
     # break
+
+    if (tick > 50):
+        control.play_again()
+        control.play()
+        control.start()
 
     if cv2.waitKey(1) == ord('q'):
         cv2.destroyAllWindows()

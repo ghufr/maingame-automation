@@ -69,7 +69,7 @@ def on_high_V_thresh_trackbar(val):
     cv.setTrackbarPos(high_V_name, window_detection_name, high_V)
 
 
-wincap = WinCap('Martabak Mania - Google Chrome')
+wincap = WinCap('Tako Block - Google Chrome')
 
 cv.namedWindow(window_capture_name)
 cv.namedWindow(window_detection_name)
@@ -89,8 +89,8 @@ cv.createTrackbar(high_V_name, window_detection_name, high_V,
 cv.resizeWindow(window_detection_name, 800, 200)
 while True:
     img = wincap.get_screenshot()
-    img_crop = img[280:420, 40:210]
-    frame_HSV = cv.cvtColor(img_crop, cv.COLOR_RGB2HSV)
+    # img_crop = img[280:420, 40:210]
+    frame_HSV = cv.cvtColor(img, cv.COLOR_RGB2HSV)
     frame_threshold = cv.inRange(
         frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
     # frame_threshold = cv.GaussianBlur(frame_threshold, (5, 5), 0)
@@ -104,7 +104,7 @@ while True:
     # if (max_val > 0.7):
     #     cv.rectangle(img, max_loc,
     #                  (max_loc[0] + w, max_loc[1] + h), (0, 0, 255), 2)
-    cv.imshow(window_capture_name, img_crop)
+    cv.imshow(window_capture_name, img)
     cv.imshow("Treshold", frame_threshold)
     # cv.imshow('Result', frame_result)
 

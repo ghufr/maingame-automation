@@ -25,7 +25,7 @@ class Identifier:
         return img_masked
 
     def find(self, img_masked):
-        contours, hist = cv2.findContours(
+        contours, _ = cv2.findContours(
             img_masked, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         rectangles = []
@@ -41,14 +41,14 @@ class Identifier:
             # print(rw, rh, area)
 
             # print(self.label, diff)
-            if (self.label == 'skacang'):
-                if (len(contours) > 20):
-                    break
+            # if (self.label == 'skacang'):
+            #     if (len(contours) > 20):
+            #         break
 
-            if (area > self.area + 20):
+            if (area > self.area + 120):
 
                 # print(area)
-                rectangles.append(rect)
+                rectangles.append(cnt)
                 sizes.append(area)
                 # print('Jumlah Item: ',  len[rectagles])
         # print(len(rectangles))
