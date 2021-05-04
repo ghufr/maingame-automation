@@ -19,7 +19,7 @@ topping_list = [
     Identifier('Bakso', [(0, 0, 121), (17, 72, 226)], 24, 24),
     Identifier('Sosis', [(4, 56, 146), (9, 255, 249)], 40, 20),
     Identifier('Kornet', [(8, 57, 0), (14, 202, 255)], 21, 28),
-    Identifier('Udang', [(14, 24, 231), (19, 180, 255)], 32, 32),
+    Identifier('Udang', [(14, 24, 231), (19, 180, 255)], 30, 24),
 ]
 
 drink_list = [

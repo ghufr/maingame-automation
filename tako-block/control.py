@@ -8,7 +8,7 @@ class Control:
 
     def __init__(self, debug=False):
         self.debug = debug
-        pyautogui.PAUSE = 0.08
+        pyautogui.PAUSE = 0.09
 
     def start(self):
         if (not self.debug):
@@ -16,4 +16,14 @@ class Control:
 
     def add(self, clicks):
         if (not self.debug):
-            pyautogui.click(self.start_pos, clicks=clicks, interval=0.1)
+            print(clicks)
+            pyautogui.click(self.start_pos, clicks=clicks,
+                            interval=0.08, duration=0.08)
+
+    def down(self):
+        if (not self.debug):
+            pyautogui.mouseDown(_pause=False)
+
+    def up(self):
+        if (not self.debug):
+            pyautogui.mouseUp(_pause=False, duration=0.0)

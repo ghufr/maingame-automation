@@ -19,28 +19,32 @@ block_height = 46
 control.start()
 
 count = 0
-last = 0
+last_x_terrain = 0
+last_b_terrain = 0
+last_diff = 0
+is_moving = False
+is_down = False
+click = 0
 
 while(True):
-    h_char = 0
     cap = wincap.get_screenshot()
     # out.write(cap)
     cap_hsv = cv2.cvtColor(cap, cv2.COLOR_BGR2HSV)
 
-    crop = cap_hsv[305:wincap.h - 165, 0:wincap.w]
+    crop = cap_hsv
 
     cap_w_half = math.floor(cap_hsv.shape[1] / 2)
 
-    cap_char = crop[0:crop.shape[0], 60:120]
-    cap_terrain = crop[0:crop.shape[0], 210: crop.shape[1]]
-    cap_hole = cap_hsv[cap_hsv.shape[0] - 100:cap_hsv.shape[0],
-                       150: cap_hsv.shape[1]]
+    cap_char = crop[0:crop.shape[0] - 70, 50:110]
+    cap_terrain = crop[0:crop.shape[0] - 70, 120: crop.shape[1]]
+    cap_hole = crop[crop.shape[0] - 50:crop.shape[0],
+                    110: crop.shape[1]]
     # cap_ = crop[crop.shape[0] - 100:crop.shape[0], 0:40]
 
     id_char = Identifier('Character', cap_char, 2000)
-    id_terrain = Identifier('Terrain', cap_terrain, 600)
+    id_terrain = Identifier('Terrain', cap_terrain, 200)
     id_end = Identifier('End', crop, 2000)
-    id_hole = Identifier('Hole', cap_hole, 1000)
+    id_hole = Identifier('Hole', cap_hole, 500)
 
     thresh_char = id_char.apply_hsv_filter([(16, 180, 0), (38, 255, 255)])
     thresh_end = id_end.apply_hsv_filter([(0, 0, 63), (29, 215, 200)])
@@ -54,64 +58,104 @@ while(True):
     rects_hole = id_hole.find_contours()
     rects_end = id_end.find_contours()
 
-    bottom = 0
-    h_top = 0
+    b_terrain = 0
     h_terrain = 0
+    x_terrain = 0
 
-    # if (len(rects_end) > 0):
-    #     break
+    b_char = 0
+    h_char = 0
+    t_char = 0
 
-    # print(rects_terrain)
     is_terrain = len(rects_terrain) > 0
     is_char = len(rects_char) > 0
     is_level = False
 
     if (is_terrain):
-        # print(rects_terrain[0])
-        cv2.rectangle(cap_terrain, rects_terrain[0], (0, 0, 255), 2)
-        # cv2.rectangle(crop, rects_terrain[0], (0, 0, 255), 2)
+        terrain = rects_terrain[0]
+        cv2.rectangle(cap_terrain, terrain, (0, 0, 255), 2)
 
-        # print(rects_terrain[0])
-        bottom = round(
-            (abs(crop.shape[0] - rects_terrain[0][1] - rects_terrain[0][3])) / block_height)
-        # bottom = (rects_terrain[0][3] + 10) / block_height
-        # print(rects_terrain[0])
-        h_terrain = rects_terrain[0][1]
+        b_terrain = round(
+            (abs(cap_terrain.shape[0] - terrain[1] - terrain[3])) / block_height)
+        h_terrain = crop.shape[0] - (terrain[1] + terrain[3])
+        x_terrain = terrain[0]
+        if (x_terrain > 10):
+            last_b_terrain = b_terrain
+        else:
+            last_b_terrain = 0
+            click = 0
+        # if (abs(last_x_terrain - x_terrain) > 10):
+        #     last_x_terrain = x_terrain
+        #     is_moving = True
+        # else:
+        #     is_moving = False
+
+    # highest_point = 0
 
     if (is_char):
         add = 0
         for i in rects_char:
             cv2.rectangle(cap_char, i, (255, 0, 0), 1)
             # cv2.rectangle(crop, i, (0, 255, 0), 2)
+            h_char += i[3]
+            y = crop.shape[0] - i[1] - i[3]
+            if (y > t_char):
+                t_char = y
+
             if (i[3] > block_height * 2):
                 add += 1
+        b_char = len(rects_char) - 1 + add
 
-        h_char = len(rects_char) - 1 + add
-        print(rects_char[0])
-        h_top = rects_char[0][1] - rects_char[0][3]
+        # print(rects_char[0])
+        # h_top = crop.shape[0] - (rects_char[0][1] - rects_char[0][3])
+
+    diff = b_terrain - abs(b_char)
+    is_hole = len(rects_hole) > 0 and b_char < 5
+
+    is_changed = False
 
     if(is_terrain and is_char):
-        is_level = h_top - h_terrain > block_height
-
-    diff = bottom - abs(h_char)
-    is_hole = len(rects_hole) > 0 and h_char < 6
+        is_level = h_char >= h_terrain and b_char > 1
 
     if (is_hole):
-        # print("Hole")
-        # for i in range(10):
         control.add(5)
 
-    if (diff > 0 and not is_level):
-        control.add(diff)
-        # for i in range(diff):
+    if (diff != last_diff):
+        last_diff = diff
+        is_changed = True
 
-    print(bottom, h_char, diff, h_terrain, h_top)
-    log = str(bottom) + "," + str(h_char) + \
-        "," + str(diff) + ',' + str(is_hole) + "," + str(is_level)
-    cv2.putText(crop, log, (50, 50), cv2.FONT_HERSHEY_SIMPLEX,
-                2, color=(0, 0, 0), thickness=4)
-    # if (len(rects_passed) > 0):
-    # count += 1
+    # if (is_down and is_changed):
+    #     control.up()
+    #     is_down = False
+
+    # if(is_level or not is_terrain):
+    #     control.up()
+    #     is_down = False
+    # if (b_char == 0 and diff == 1):
+    #     control.add(1)
+    # if(not is_level and diff == 1 and is_changed and x_terrain > 0):
+    #     # control.up()
+    #     control.add(1)
+        # is_down = False
+    # target = last_b_terrain - click
+    # if (target > 0):
+    #     control.add(target)
+    #     click = last_b_terrain
+    if (not is_level and is_changed and diff > 0 and x_terrain > 0):
+        control.add(diff)
+
+    # if (not is_level and is_changed and x_terrain > 0 and diff > 0):
+    #     if (not is_down):
+    #         is_down = True
+    #         control.down()
+
+    print(count, ":", b_terrain, b_char, diff,
+          h_terrain, h_char, is_level, click, is_changed)
+    log = str(b_terrain) + "," + str(b_char) + \
+        "," + str(diff) + ',' + str(is_hole) + "," + \
+        str(h_terrain) + "," + str(t_char) + "," + \
+        str(is_level) + "," + str(is_changed)
+    cv2.putText(crop, log, (0, 50), cv2.FONT_HERSHEY_SIMPLEX,
+                0.8, color=(0, 0, 0), thickness=2)
 
     # print(count)
     cv2.imshow('Capture', crop)
@@ -120,13 +164,17 @@ while(True):
     cv2.imshow('Hole', cap_hole)
     # cv2.imshow('Pass', cap_passed)
     ratio = 0.5
-    count += 1
-    if (count > 100):
+    if (count > 200):
         count = 1
     res = cv2.resize(crop, dsize=(round(crop.shape[1] * ratio), round(crop.shape[0] * ratio)),
                      interpolation=cv2.INTER_CUBIC)
+
     cv2.imwrite('output/' + str(count) + '.png', res)
 
-    if cv2.waitKey(1) == ord('q'):
+    is_end = b_char + h_char == 0
+    count += 1
+
+    if cv2.waitKey(1) == ord('q') or is_end:
+        print("end at count " + str(count))
         cv2.destroyAllWindows()
         break

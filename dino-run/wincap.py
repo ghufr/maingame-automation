@@ -1,5 +1,5 @@
 import win32gui
-# from PIL import ImageGrabs
+from PIL import ImageGrab
 import mss
 import mss.tools
 import numpy as np
@@ -24,7 +24,9 @@ class WinCap:
         self.w = window_rect[2] - window_rect[0]
         self.h = window_rect[3] - window_rect[1]
 
-        # offset_top = 118
+        offset_top = 118
+        offset_bottom = 200
+
         # offset_x = 20
 
         # self.w = self.w - (offset_x * 2)
@@ -33,7 +35,7 @@ class WinCap:
         # self.cropped_top = offset_top
 
     def get_screenshot(self):
-        bbox = (0, 360, self.w - 80, self.h - 100)
+        bbox = (80, 770, self.w - 80, self.h - 240)
         raw = self.sct.grab(bbox)
         self.out = np.array(raw)
         # raw = raw.crop((self.cropped_x, self.cropped_top,

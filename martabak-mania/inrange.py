@@ -69,7 +69,7 @@ def on_high_V_thresh_trackbar(val):
     cv.setTrackbarPos(high_V_name, window_detection_name, high_V)
 
 
-wincap = WinCap('Tako Block - Google Chrome')
+wincap = WinCap('Tako Dino Run - Google Chrome')
 
 cv.namedWindow(window_capture_name)
 cv.namedWindow(window_detection_name)
