@@ -1,5 +1,11 @@
 import pyautogui
 
+pos = {
+    "r": (416, 935),
+    "c": (248, 935),
+    "l": (83, 935)
+}
+
 
 class Control:
     left_pos = (83, 935)
@@ -11,14 +17,18 @@ class Control:
     def __init__(self, debug=False):
         self.debug = debug
 
-    def left(self):
+    def click(self, res):
         if (not self.debug):
-            pyautogui.click(self.left_pos)
+            pyautogui.click(pos[res])
 
-    def right(self):
-        if (not self.debug):
-            pyautogui.click(self.right_pos)
+    # def left(self):
+    #     if (not self.debug):
+    #         pyautogui.click(self.left_pos)
 
-    def center(self):
-        if (not self.debug):
-            pyautogui.click(self.center)
+    # def right(self):
+    #     if (not self.debug):
+    #         pyautogui.click(self.right_pos)
+
+    # def center(self):
+    #     if (not self.debug):
+    #         pyautogui.click(self.center_pos)
